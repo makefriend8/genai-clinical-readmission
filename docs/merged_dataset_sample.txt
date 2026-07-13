@@ -1,0 +1,22 @@
+==================================================
+ Merged Dataset Structure (Data Types)
+==================================================
+subject_id           int64
+hadm_id              int64
+admittime           object
+dischtime           object
+readmitted_30day     int64
+note_id             object
+input               object
+target              object
+dtype: object
+
+==================================================
+ First 5 Rows (Sample - REDACTED FOR DUA COMPLIANCE)
+==================================================
+   subject_id   hadm_id            admittime            dischtime  readmitted_30day         note_id                                                      input                                                     target
+0    10002221  20195471  2203-06-13 00:00:00  2203-06-16 13:28:00                 0   10002221-DS-9  [REDACTED PER MIMIC-IV DUA | Original Length: 6878 chars]  [REDACTED PER MIMIC-IV DUA | Original Length: 1944 chars]
+1    10012345  28886995  2124-12-29 07:15:00  2124-12-31 14:49:00                 0  10012345-DS-11  [REDACTED PER MIMIC-IV DUA | Original Length: 4393 chars]  [REDACTED PER MIMIC-IV DUA | Original Length: 1244 chars]
+2    10012345  28146623  2125-05-18 08:45:00  2125-05-20 14:17:00                 0  10012345-DS-12  [REDACTED PER MIMIC-IV DUA | Original Length: 3756 chars]  [REDACTED PER MIMIC-IV DUA | Original Length: 1346 chars]
+3    10013643  22109939  2195-07-10 09:00:00  2195-07-13 12:00:00                 0  10013643-DS-19  [REDACTED PER MIMIC-IV DUA | Original Length: 3886 chars]   [REDACTED PER MIMIC-IV DUA | Original Length: 751 chars]
+4    10014451  21157275  2138-03-09 00:20:00  2138-03-12 13:04:00                 0  10014451-DS-15  [REDACTED PER MIMIC-IV DUA | Original Length: 6058 chars]  [REDACTED PER MIMIC-IV DUA | Original Length: 1627 chars]

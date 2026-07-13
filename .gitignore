@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+cohort_final_v2.csv
+merged_cohort_text_data.csv
+mimic-iv-bhc.csv
+
