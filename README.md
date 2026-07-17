@@ -1,6 +1,11 @@
 # Human vs Machine Summarization of Clinical Notes
 Evaluating Predictive Signal Retention for 30-Day Readmission After Joint Arthroplasty
 
+**Team Members:**
+- Jiasong Zhang
+- Colin Moller
+- Shail Patel
+
 This repository contains the complete data preprocessing pipeline, generative model architectures, and evaluation frameworks required to assess the efficacy of LongT5 and CVAE in compressing clinical notes and handling severe medical class imbalances.
 
 ---
