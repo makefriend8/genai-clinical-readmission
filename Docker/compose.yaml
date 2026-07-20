@@ -1,0 +1,25 @@
+#
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: Docker/Dockerfile
+      args:
+        # Uncomment and set to your host UID so files written into the
+        # bind-mounted volume below aren't owned by a foreign UID:
+        # UID: "1000"
+        UID: "10001"
+    volumes:
+      - ..:/app
+    working_dir: /app
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+
