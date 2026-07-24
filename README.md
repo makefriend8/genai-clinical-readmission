@@ -67,6 +67,10 @@ genai-clinical-readmission/
 ├── data/                    
 │   ├── README.md                       # DETAILED REPRODUCIBILITY GUIDE (SQL & Wget)
 │   └── processed/                      # Contains train.csv, val.csv, test.csv
+├── docker/                    
+│   ├── Dockerfile                      # GPU (CUDA) image: installs deps, runs the pipeline scripts
+│   ├── README.Docker.md                # How to build/run the pipeline in Docker instead of Colab
+│   └── compose.yaml                    # Compose service
 ├── src/                     
 │   ├── merge_datasets.py               # Joins structured cohort with unstructured BHC text
 │   ├── preprocess.py                   # Pipeline for data cleaning, leakage masking, and splitting
