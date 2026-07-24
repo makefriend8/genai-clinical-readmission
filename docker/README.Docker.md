@@ -14,6 +14,67 @@ LongT5 training),
 - `cohort_final_v2.csv` and `mimic-iv-bhc.csv` placed in the repo root before
   running (see `../data/README.md` for how to obtain them).
 
+### GPU passthrough
+
+Before running the pipeline, confirm the host itself can reach the GPU from
+a container:
+
+```bash
+docker run --rm --gpus all nvidia/cuda:12.1.1-runtime-ubuntu22.04 nvidia-smi
+```
+
+If that fails, it's an NVIDIA Container Toolkit / driver problem on the
+host, not something in this repo's Docker files - reinstall/reconfigure the
+toolkit per NVIDIA's guide linked above before troubleshooting further.
+
+The actual passthrough is the `deploy.resources.reservations.devices` block
+in `compose.yaml`:
+
+```yaml
+deploy:
+  resources:
+    reservations:
+      devices:
+        - driver: nvidia
+          count: all
+          capabilities: [gpu]
+```
+
+- `capabilities` is the only required field - Compose refuses to start the
+  service without it.
+- `count: all` reserves every GPU on the host. If you have multiple GPUs and
+  want to keep LongT5 off one that's in use elsewhere, use `device_ids:
+  ["0"]` instead (find IDs via `nvidia-smi`) - `count` and `device_ids` are
+  mutually exclusive.
+- `NVIDIA_VISIBLE_DEVICES` and `NVIDIA_DRIVER_CAPABILITIES=compute,utility`
+  are set explicitly in the `environment:` block. They're already the
+  default in the `nvidia/cuda` base image, but are pinned here so
+  passthrough doesn't silently break if the base image ever changes.
+
+### VRAM / memory notes for LongT5 training
+
+`scripts/train_longt5.py` runs `google/long-t5-tglobal-base` at a 4096-token
+input length, which is heavy on VRAM even with `per_device_train_batch_size=1`
+and `fp16` (both already set in that script). A few things this Docker setup
+does to help:
+
+- `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True` is set in the
+  container's environment. This reduces allocator fragmentation, which is
+  what usually causes `CUDA out of memory` errors mid-run even when
+  `nvidia-smi` shows free VRAM.
+- `shm_size: "2gb"` gives the container's `/dev/shm` more room than Docker's
+  64MB default. This doesn't matter today since the training script uses
+  the default of 0 DataLoader workers, but it's cheap insurance if
+  `dataloader_num_workers` is ever increased for throughput - PyTorch passes
+  batches between worker processes through shared memory, and the default
+  size causes crashes (not slowdowns) when it's too small.
+- Watch VRAM live from the host while training with `watch -n1 nvidia-smi`,
+  or from inside the container with `docker compose exec app nvidia-smi`.
+- If you hit OOM anyway, the standard levers (in `scripts/train_longt5.py`)
+  are: shrink `max_input_length`/`max_target_length` in
+  `ClinicalNotesDataset`, or add `gradient_accumulation_steps` to
+  `Seq2SeqTrainingArguments` rather than raising batch size.
+
 ### Building and running
 
 From the `Docker/` directory:

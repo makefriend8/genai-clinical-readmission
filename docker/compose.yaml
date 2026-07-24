@@ -12,13 +12,21 @@ services:
     volumes:
       - ..:/app
     working_dir: /app
+
+    shm_size: "2gb"
     environment:
+    tility").
       - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      
+      - PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
     deploy:
       resources:
         reservations:
           devices:
+
             - driver: nvidia
+
               count: all
               capabilities: [gpu]
 
