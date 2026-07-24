@@ -12,7 +12,7 @@ def get_longt5_tokenizer(model_name="google/long-t5-tglobal-base"):
     """
     Load the corresponding tokenizer.
     """
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, pad_token="<pad>", eos_token="</s>", bos_token="<s>", unk_token="<unk>")
     return tokenizer
 
 if __name__ == "__main__":

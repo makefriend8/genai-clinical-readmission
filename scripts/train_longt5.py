@@ -32,14 +32,13 @@ class ClinicalNotesDataset(Dataset):
         )
         
         # Tokenize target (BHC)
-        with self.tokenizer.as_target_tokenizer():
-            labels = self.tokenizer(
-                str(row['target']), 
-                max_length=self.max_target_length, 
-                padding="max_length", 
-                truncation=True,
-                return_tensors="pt"
-            )
+        labels = self.tokenizer(
+            text_target=str(row['target']), 
+            max_length=self.max_target_length, 
+            padding="max_length", 
+            truncation=True,
+            return_tensors="pt"
+        )
             
         # Squeeze to remove batch dimension added by return_tensors="pt"
         input_ids = model_inputs["input_ids"].squeeze()
@@ -84,7 +83,7 @@ def main():
     print("[3/3] Setting up Trainer...")
     training_args = Seq2SeqTrainingArguments(
         output_dir=output_dir,
-        evaluation_strategy="epoch",
+        eval_strategy="epoch",
         learning_rate=3e-5,
         per_device_train_batch_size=1, # Very small batch size for LongT5 due to memory constraints
         per_device_eval_batch_size=1,
@@ -101,7 +100,7 @@ def main():
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=val_dataset,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
     )
     
     print("Trainer setup complete! Ready to start training.")
